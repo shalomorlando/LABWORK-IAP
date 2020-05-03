@@ -7,7 +7,10 @@ interface Crud {
     public function search();
     public function update();
     public function removeOne();
-    public function removeAll();
+    
+    //added for Lab2
+    public function validateForm();
+    public function createFormErrorSessions();
 }
 
 ?>
