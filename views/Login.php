@@ -1,28 +1,34 @@
 <?php
-include_once 'DBConnector.php';
-include_once 'user.php';
+include_once '../classes/user.php';
 
-if (!isset($_POST['btn-login'])){
-    $username = "";
-    $password = "";
-    if(isset($_POST['username']) && isset($_POST['password'])){
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-    }  
-    
-    $instance = User::create();
-    $instance->setPassword($password);
-    $instance->setUsername($username);
-
+if(isset($_POST['btn-login']))
+{
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $instance = User::create()->setPassword($password)->setUsername($username);
 
     if($instance->isPasswordCorrect()){
+        //log in user
         $instance->login();
+        //set user session
         $instance->createUserSession();
+        
+
     }else{
-        $header("Location:Login.php");
+        echo "waaah <br>";
     }
+
+    echo "Hello my name is " .$instance->getUsername(). " and my pass is " .$instance->getPassword();
+
+}else{
+    echo "Hello from the outside";
 }
 ?>
+
+
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -41,7 +47,7 @@ if (!isset($_POST['btn-login'])){
                 <td><input type="text" name="username" placeholder="Username" required></td>
             </tr>
             <tr>
-                <td><input type="text" name="username" placeholder="Username" required></td>
+                <td><input type="password" name="password" placeholder="Enter Password"></td>
             </tr>
             <tr>
                 <td><button type="submit" name="btn-login"><strong>LOGIN</strong></button></td>

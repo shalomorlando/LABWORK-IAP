@@ -8,19 +8,23 @@ if(isset($_POST['btn-save'])){
     $username = $_POST['username'];
     $password = $_POST['password'];
     
-    $user = User::create()->saveNewUser($first_name, $last_name, $city, $username, $password);
+    $user = User::create()->createNewUser($first_name, $last_name, $city, $username, $password);
 
     if(!$user->validateForm()){
-        $user->createFormErrorSessions();    
-    }
-
-    $res = $user->save();
-
-    if($res){
-        echo "added record successfully";
+        $user->createFormErrorSessions();   
+        header("Refresh:0");
+        die(); 
     }else{
-        echo "added nothing";
-    }
+        $res = $user->save();
+
+        
+        if($res){
+            echo "added record successfully";
+        }else{
+            echo "added nothing";
+        }
+    }   
+
 }
 ?>
 
@@ -51,7 +55,7 @@ if(isset($_POST['btn-save'])){
             </tr>
             <tr>
                 <td>
-                    <input type="text" name = "first_name" placeholder = "First Name">
+                    <input type="text" name = "first_name" placeholder = "First Name" >
                 </td>
             </tr>
             <tr>

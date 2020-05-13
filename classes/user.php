@@ -29,6 +29,17 @@ class User implements Crud, Authenticator{
         return $instance;
     }
 
+    function createNewUser($first_name, $last_name,$city, $username, $password){
+
+        $this->setFirstName($first_name);
+        $this->setLastName($last_name);
+        $this->setCityName($city);
+        $this->setUsername($username);
+        $this->setPassword($password);
+        
+        return $this;
+    }
+
     //user id setter
     public function setUserId ($user_id){
         $this->user_id = $user_id;
@@ -102,14 +113,21 @@ class User implements Crud, Authenticator{
         $this->hashPassword();
 
         $pass = $this->password;
-        
-        $sql = "INSERT INTO users (id,first_name,last_name,user_city,username,password) VALUES(DEFAULT,'".$fn."','".$ln."','".$city."','".$uname."','".$pass."')";
+        $exist = $this->isUserExist();
 
-        if ($this->conn->conn->query($sql)){
-            return "successful";
-        } else {
-            return null;
+        if(!$exist){
+            echo "Sorry the Username already exists </br>";
+        }else{
+            $sql = "INSERT INTO users (id,first_name,last_name,user_city,username,password) VALUES(DEFAULT,'".$fn."','".$ln."','".$city."','".$uname."','".$pass."')";
+
+            if ($this->conn->conn->query($sql)){
+                return "successful";
+            } else {
+                return null;
+            }
         }
+        
+
     }
 
     public function readAll(){
@@ -158,6 +176,7 @@ class User implements Crud, Authenticator{
     }
 
     public function hashPassword(){
+        //function to hash the password
         $this->password = password_hash($this->password, PASSWORD_DEFAULT);
     }
 
@@ -166,12 +185,12 @@ class User implements Crud, Authenticator{
         $res = $this->conn->conn->query("SELECT * FROM users");
 
         if (!$res) {
-            echo("Error description: " . $this->conn->conn-> error);
+            echo("Error description: " . $this->conn->conn->error);
         }
 
         if ($res->num_rows > 0) {
             // output data of each row
-            while($row = $result->fetch_assoc()) {
+            while($row = $res->fetch_assoc()) {
                 if(password_verify($this->getPassword(), $row["password"]) && $this->getUsername() == $row["username"]){
                     $found = true;
                 }
@@ -200,18 +219,28 @@ class User implements Crud, Authenticator{
         session_start();
         unset($_SESSION['username']);
         session_destroy();
-        header("Location:lab1.php");
+        header("Location:Login.php");
     }
 
-    function saveNewUser($first_name, $last_name,$city, $username, $password){
+    public function isUserExist(){
+        $res = $this->readAll();
 
-        $this->setFirstName($first_name);
-        $this->setLastName($last_name);
-        $this->setCityName($city);
-        $this->setUsername($username);
-        $this->setPassword($password);
-        
-        return $this;
+        if(!$res) {
+            echo("Error description: " .$this->conn->conn->error); 
+        }
+        //check if the number of rows in the result set is greater than 0
+        if ($res->num_rows > 0){
+            //loop through each row of the result set
+
+            while($row = $res->fetch_assoc()){
+                if($this->getUsername() == $row ["username"]){
+                    return false;
+                }
+            }
+
+        }
+
+        return true;
     }
 
 }
