@@ -175,6 +175,11 @@ class User implements Crud, Authenticator{
         $_SESSION['form_errors'] = "all fields are required";
     }
 
+    public function createUserNameAlreadyExistsError(){
+        session_start();
+        $_SESSION['form_errors'] = "The Username already Exists";
+    }
+
     public function hashPassword(){
         //function to hash the password
         $this->password = password_hash($this->password, PASSWORD_DEFAULT);
@@ -223,17 +228,22 @@ class User implements Crud, Authenticator{
     }
 
     public function isUserExist(){
+        //return false if username already exists
         $res = $this->readAll();
 
+        //check if query was successful 
         if(!$res) {
             echo("Error description: " .$this->conn->conn->error); 
         }
+
+
         //check if the number of rows in the result set is greater than 0
         if ($res->num_rows > 0){
-            //loop through each row of the result set
 
+            //loop through each row of the result set
             while($row = $res->fetch_assoc()){
                 if($this->getUsername() == $row ["username"]){
+                    echo "This user name already exists";
                     return false;
                 }
             }

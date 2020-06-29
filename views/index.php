@@ -14,9 +14,13 @@ if(isset($_POST['btn-save'])){
         $user->createFormErrorSessions();   
         header("Refresh:0");
         die(); 
+    }elseif(!$user->isUserExist()){
+        $user->createUserNameAlreadyExistsError();  
+        $delay = '8'; 
+        header("Refresh: $delay");
+        die();  
     }else{
         $res = $user->save();
-
         
         if($res){
             echo "added record successfully";

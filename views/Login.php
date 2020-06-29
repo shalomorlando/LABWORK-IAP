@@ -1,28 +1,30 @@
 <?php
-include_once '../classes/user.php';
+    include_once '../classes/user.php';
 
-if(isset($_POST['btn-login']))
-{
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $instance = User::create()->setPassword($password)->setUsername($username);
+    if(isset($_POST['btn-login']))
+    {
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $instance = User::create()->setPassword($password)->setUsername($username);
 
-    if($instance->isPasswordCorrect()){
-        //log in user
-        $instance->login();
-        //set user session
-        $instance->createUserSession();
-        
+        if($instance->isPasswordCorrect()){
+            //log in user
+            $instance->login();
+            //set user session
+            $instance->createUserSession();
+            
 
-    }else{
-        echo "waaah <br>";
+        }
+        else{
+            //when user login is wrong
+            echo "Sorry could not find user please try again <br>";
+        }
+
     }
 
-    echo "Hello my name is " .$instance->getUsername(). " and my pass is " .$instance->getPassword();
-
-}else{
-    echo "Hello from the outside";
-}
+    else{
+        echo "Hello from the outside - Login to procede";
+    }
 ?>
 
 
