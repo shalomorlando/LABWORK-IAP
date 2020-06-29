@@ -18,7 +18,7 @@ if(isset($_POST['btn-save'])){
         $user->createUserNameAlreadyExistsError();  
         $delay = '8'; 
         header("Refresh: $delay");
-        die();  
+        die(" Try using a different User name");  
     }else{
         $res = $user->save();
         
