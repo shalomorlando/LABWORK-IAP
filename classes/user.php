@@ -10,6 +10,7 @@ class User implements Crud, Authenticator{
     private $first_name;
     private $last_name;
     private $city_name;
+    private $file_name;
     private $conn;
     
     private $username;
@@ -29,13 +30,14 @@ class User implements Crud, Authenticator{
         return $instance;
     }
 
-    function createNewUser($first_name, $last_name,$city, $username, $password){
+    function createNewUser($first_name, $last_name,$city, $username, $password, $file_name){
 
         $this->setFirstName($first_name);
         $this->setLastName($last_name);
         $this->setCityName($city);
         $this->setUsername($username);
         $this->setPassword($password);
+        $this->setFileName($file_name);
         
         return $this;
     }
@@ -74,6 +76,11 @@ class User implements Crud, Authenticator{
         return $this;
     }
 
+    public function setFileName($file_name){
+        $this->file_name = $file_name;
+        return $this;
+    }
+
     //user id getter
     public function getUserId() {
         return $this->user_id;
@@ -104,11 +111,18 @@ class User implements Crud, Authenticator{
         return $this->city_name;
     }
 
+    //uploaded file name getter
+    public function getFileName(){
+        return $this->file_name;
+    }
+
+
     public function save(){
         $fn = $this->first_name;
         $ln = $this->last_name;
         $city = $this->city_name;
         $uname = $this->username;
+        $fileName = $this->file_name;
 
         $this->hashPassword();
 
@@ -118,7 +132,7 @@ class User implements Crud, Authenticator{
         if(!$exist){
             echo "Sorry the Username already exists </br>";
         }else{
-            $sql = "INSERT INTO users (id,first_name,last_name,user_city,username,password) VALUES(DEFAULT,'".$fn."','".$ln."','".$city."','".$uname."','".$pass."')";
+            $sql = "INSERT INTO users (id,first_name,last_name,user_city,username,password, image) VALUES(DEFAULT,'".$fn."','".$ln."','".$city."','".$uname."','".$pass."', '".$fileName."')";
 
             if ($this->conn->conn->query($sql)){
                 return "successful";

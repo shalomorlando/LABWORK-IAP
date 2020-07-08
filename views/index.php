@@ -1,5 +1,6 @@
 <?php
 include_once '../classes/user.php';
+include_once '../classes/fileUploader.php';
 
 if(isset($_POST['btn-save'])){
     $first_name = $_POST['first_name'];
@@ -7,26 +8,45 @@ if(isset($_POST['btn-save'])){
     $city = $_POST['city_name'];
     $username = $_POST['username'];
     $password = $_POST['password'];
+    $imageData = $_FILES['fileToUpload'];
     
-    $user = User::create()->createNewUser($first_name, $last_name, $city, $username, $password);
+    $user = User::create()->createNewUser($first_name, $last_name, $city, $username, $password, $imageData['name']);
+    $fileUploader = new FileUploader();
+
+    $fileUploader->setOriginalName($imageData['tmp_name']);
+    $fileUploader->setFinalFileName($imageData['name']);
+    $fileUploader->setFileType($imageData['type']);
+    $fileUploader->setFileSize($imageData['size']);
+
+
 
     if(!$user->validateForm()){
         $user->createFormErrorSessions();   
         header("Refresh:0");
         die(); 
-    }elseif(!$user->isUserExist()){
+    }
+    elseif(!$user->isUserExist()){
         $user->createUserNameAlreadyExistsError();  
         $delay = '8'; 
         header("Refresh: $delay");
         die(" Try using a different User name");  
-    }else{
-        $res = $user->save();
-        
-        if($res){
-            echo "added record successfully";
-        }else{
-            echo "added nothing";
+    }
+    else{
+
+        $isUploadOk = $fileUploader->uploadFile();
+
+        if($isUploadOk){
+            $res = $user->save();
+            if($res){
+                echo "added record successfully";
+            } else {
+                echo "added nothing";
+            }
+        } else {
+            echo "upload failed nothing added to db";
+
         }
+      
     }   
 
 }
@@ -42,7 +62,7 @@ if(isset($_POST['btn-save'])){
     <link rel="stylesheet" href="../styles/style.css">
 </head>
 <body>
-    <form method="post" name="user_details" onsubmit="return validateForm()" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
+    <form method="post" name="user_details" onsubmit="return validateForm()" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" enctype="multipart/form-data">
         <table style = "align:center">
             <tr>
                 <td>
@@ -80,6 +100,12 @@ if(isset($_POST['btn-save'])){
             <tr>
                 <td>
                     <input type="password" name = "password" placeholder = "Password">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Profile Image:
+                    <input type="file" name = "fileToUpload"  id= "fileToUpload">
                 </td>
             </tr>
             <tr>
