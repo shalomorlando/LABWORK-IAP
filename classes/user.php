@@ -11,6 +11,8 @@ class User implements Crud, Authenticator{
     private $last_name;
     private $city_name;
     private $file_name;
+    private $timestamp;
+    private $timezone;
     private $conn;
     
     private $username;
@@ -22,6 +24,9 @@ class User implements Crud, Authenticator{
         $this->city_name = '';
         $this->username = '';
         $this->password = '';
+        $this->file_name = '';
+        $this->timestamp = '';
+        $this->timezone = '';
         $this->conn = new DBConnector;
     }
 
@@ -30,7 +35,7 @@ class User implements Crud, Authenticator{
         return $instance;
     }
 
-    function createNewUser($first_name, $last_name,$city, $username, $password, $file_name){
+    function createNewUser($first_name, $last_name,$city, $username, $password, $file_name, $time_stamp, $time_zone){
 
         $this->setFirstName($first_name);
         $this->setLastName($last_name);
@@ -38,7 +43,20 @@ class User implements Crud, Authenticator{
         $this->setUsername($username);
         $this->setPassword($password);
         $this->setFileName($file_name);
+        $this->setTimestamp($time_stamp);
+        $this->setTimezone($time_zone);
+
         
+        return $this;
+    }
+
+    public function setTimestamp($timestamp){
+        $this->timestamp = $timestamp;
+        return $this;
+    }
+
+    public function setTimezone($timezone){
+        $this->timezone = $timezone;
         return $this;
     }
 
@@ -79,6 +97,14 @@ class User implements Crud, Authenticator{
     public function setFileName($file_name){
         $this->file_name = $file_name;
         return $this;
+    }
+
+    public function getTimestamp(){
+        return $this->timestamp;
+    }
+
+    public function getTimezone(){
+        return $this->timezone;
     }
 
     //user id getter
@@ -123,6 +149,8 @@ class User implements Crud, Authenticator{
         $city = $this->city_name;
         $uname = $this->username;
         $fileName = $this->file_name;
+        $time_stamp = $this->timestamp;
+        $time_zone = $this->timezone;
 
         $this->hashPassword();
 
@@ -132,7 +160,7 @@ class User implements Crud, Authenticator{
         if(!$exist){
             echo "Sorry the Username already exists </br>";
         }else{
-            $sql = "INSERT INTO users (id,first_name,last_name,user_city,username,password, image) VALUES(DEFAULT,'".$fn."','".$ln."','".$city."','".$uname."','".$pass."', '".$fileName."')";
+            $sql = "INSERT INTO users (id, first_name, last_name, user_city, username, password, image, timestamp, timezone) VALUES(DEFAULT,'".$fn."','".$ln."','".$city."','".$uname."','".$pass."', '".$fileName."', '".$time_stamp."', '".$time_zone."')";
 
             if ($this->conn->conn->query($sql)){
                 return "successful";

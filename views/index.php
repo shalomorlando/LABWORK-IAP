@@ -8,9 +8,12 @@ if(isset($_POST['btn-save'])){
     $city = $_POST['city_name'];
     $username = $_POST['username'];
     $password = $_POST['password'];
+    $utc_timestamp = $_POST['utc_timestamp'];
+    $timezone = $_POST['time_zone_offset'];
     $imageData = $_FILES['fileToUpload'];
+
     
-    $user = User::create()->createNewUser($first_name, $last_name, $city, $username, $password, $imageData['name']);
+    $user = User::create()->createNewUser($first_name, $last_name, $city, $username, $password, $imageData['name'], $utc_timestamp, $timezone);
     $fileUploader = new FileUploader();
 
     $fileUploader->setOriginalName($imageData['tmp_name']);
@@ -18,8 +21,11 @@ if(isset($_POST['btn-save'])){
     $fileUploader->setFileType($imageData['type']);
     $fileUploader->setFileSize($imageData['size']);
 
+    echo $user->getTimestamp() . "<br>";
+    echo $user->getTimestamp();
 
 
+/*
     if(!$user->validateForm()){
         $user->createFormErrorSessions();   
         header("Refresh:0");
@@ -44,10 +50,9 @@ if(isset($_POST['btn-save'])){
             }
         } else {
             echo "upload failed nothing added to db";
-
         }
       
-    }   
+    }  */ 
 
 }
 ?>
@@ -59,6 +64,10 @@ if(isset($_POST['btn-save'])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LAB 1</title>
     <script type="text/javascript" src="../scripts/validate.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script type="text/javascript" src="../scripts/timezone.js"></script>
+
+
     <link rel="stylesheet" href="../styles/style.css">
 </head>
 <body>
@@ -108,6 +117,10 @@ if(isset($_POST['btn-save'])){
                     <input type="file" name = "fileToUpload"  id= "fileToUpload">
                 </td>
             </tr>
+            <!--Create hidden form controls to store client utc_date and time_zone-->
+            <input type = "hidden" name="utc_timestamp" id = "utc_timestamp" value = "" />
+            <input type = "hidden" name = "time_zone_offset" value = "" />
+
             <tr>
                 <td>
                     <button type = "submit" name = "btn-save">
