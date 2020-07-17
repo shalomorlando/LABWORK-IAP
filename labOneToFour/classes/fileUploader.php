@@ -5,7 +5,7 @@
   class FileUploader{
    //Member Variables
 
-   private static $target_directory = 'C:\xampp\htdocs\Labs\uploads\\';
+   private static $target_directory = 'C:\xampp\htdocs\Labs\labOneToFour\uploads\\';
    private static $size_limit = 50000; //Size in bytes (50kb)
    private $uploadOk = false;
    private $file_original_name;

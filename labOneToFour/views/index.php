@@ -21,11 +21,6 @@ if(isset($_POST['btn-save'])){
     $fileUploader->setFileType($imageData['type']);
     $fileUploader->setFileSize($imageData['size']);
 
-    echo $user->getTimestamp() . "<br>";
-    echo $user->getTimestamp();
-
-
-/*
     if(!$user->validateForm()){
         $user->createFormErrorSessions();   
         header("Refresh:0");
@@ -52,7 +47,8 @@ if(isset($_POST['btn-save'])){
             echo "upload failed nothing added to db";
         }
       
-    }  */ 
+    } 
+    
 
 }
 ?>
@@ -119,7 +115,7 @@ if(isset($_POST['btn-save'])){
             </tr>
             <!--Create hidden form controls to store client utc_date and time_zone-->
             <input type = "hidden" name="utc_timestamp" id = "utc_timestamp" value = "" />
-            <input type = "hidden" name = "time_zone_offset" value = "" />
+            <input type = "hidden" name = "time_zone_offset" id = "time_zone_offset" value = "" />
 
             <tr>
                 <td>
